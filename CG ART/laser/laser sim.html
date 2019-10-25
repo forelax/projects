@@ -1,0 +1,93 @@
+<!DOCTYPE html5>
+<html>
+<head>
+	<title>laserSIM</title>
+</head>
+<body>
+	<canvas id="can" width=720 height=480 style="border:2px solid grey">canvas</canvas>
+	<script type="text/javascript">
+		var c=document.getElementById("can"),
+			ctx=c.getContext("2d"),angle=0;
+		var t=[],xoffset=0,yoffset=0,scale=100;
+		function dist(x1,y1,x2,y2){
+			return Math.pow(Math.pow(x1-x2,2)+Math.pow(y1-y2,2),1/2);
+		}
+		function func(k,l){
+			if(Math.abs(k)+Math.abs(l)==0)
+				return 1;
+			if(Math.abs(k)+Math.abs(l)==2&&Math.min(Math.abs(k),Math.abs(l))==1)
+				return 0.8;
+			if(Math.abs(k)+Math.abs(l)==1)
+				return 0.75;
+			if(Math.abs(k)+Math.abs(l)==2)
+				return 0.6;
+			if(Math.abs(k)+Math.abs(l)==3&&Math.abs(Math.abs(k)-Math.abs(l))==1)
+				return 0.55;
+			if(Math.abs(k)==Math.abs(l)&&Math.abs(k)+Math.abs(l)==4)
+				return 0.5;
+			if(Math.abs(k)==Math.abs(l)&&Math.abs(k)+Math.abs(l)==6)
+				return 0.4;
+			if(Math.max(Math.abs(k),Math.abs(l))==3&&Math.min(Math.abs(k),Math.abs(l))==0)
+				return 0.35;
+			if(Math.abs(Math.abs(k)-Math.abs(l))==1&&Math.max(Math.abs(k),Math.abs(l))==3)
+				return 0.3;
+			if(Math.max(Math.abs(k),Math.abs(l))==3&&Math.min(Math.abs(k),Math.abs(l))==1)
+				return 0.25;
+		}
+		function anglee(x1,y1,x2,y2){
+			var smallnum=0.00000000001;
+			var xd=x2-x1,
+				yd=y2-y1,
+				d=Math.pow(xd*xd+yd*yd,1/2);
+			var a1=Math.asin(yd/d),
+				a2=Math.acos(xd/d);
+			if(d==0)
+				return 0;
+			if(Math.abs(a1-a2)<smallnum){
+				return a1;
+			}else if(Math.abs(a1+a2-Math.PI)<smallnum){
+				return a2;
+			}else if(Math.abs(a1+a2)<smallnum){
+				return 2*Math.PI-a2;
+			}else if(Math.abs(a2-a1-Math.PI)<smallnum){
+				return Math.PI-a1;
+			}
+		}
+		function setup(){
+			for(var i = 0 ; i <= c.width/scale ; i++){
+				for (var j = 0 ; j <= c.height/scale ; j++) {
+					for(var k = -3 ; k <= 3 ; k++){
+						for(var l = -3 ; l <= 3 ; l ++){
+							t.push({cx:i+k,cy:j+l,r:dist(i,j,i+k*scale,l+l*scale),a:anglee(i+k,j+l,i,j),b:func(k,l)});
+						}
+					}
+				}
+			}
+			ctx.scale(1/2,1/2);
+			ctx.translate(c.width/2,c.height/2);
+			var interval = setInterval(draw,1000/30);
+		}
+		function draw(){
+			ctx.fillStyle="black";
+			ctx.fillRect(-c.width,-c.height,3*c.width,3*c.height);
+			ctx.fillStyle="#1aff1a";
+			for(var i = 0 ; i < t.length ; i ++){
+				ctx.beginPath();
+				ctx.arc(xoffset+t[i].cx*scale+Math.cos(angle+t[i].a)*t[i].r,
+					    yoffset+t[i].cy*scale+Math.sin(angle+t[i].a)*t[i].r,
+					    t[i].b*3,0,2*Math.PI);
+				ctx.fill();
+			}
+		}
+		setup();
+		document.addEventListener("keydown",function(event){
+			var v=event.key;
+			if(event.key=="ArrowUp"){
+				angle+=0.0314/3;
+			}else if(event.key=="ArrowDown"){
+				angle-=0.0314/3;
+			}
+		});
+	</script>
+</body>
+</html>

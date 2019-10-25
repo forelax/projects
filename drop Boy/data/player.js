@@ -1,0 +1,23 @@
+function Player(){
+	this.x=c.width/2;
+	this.y=c.height/2;
+	this.speed=8;
+	this.scale=10;
+	this.lk=false;
+	this.rk=false;
+	this.dk=false;
+	this.uk=false;
+	this.update=function(){
+		if(scene==1)
+			this.y++;
+		if(this.lk)this.x-=this.speed;
+		if(this.rk)this.x+=this.speed;
+		if(this.uk)this.y-=this.speed;
+		if(this.dk)this.y+=this.speed;
+	}
+	this.display=function(){
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.scale,0,2*Math.PI);
+		ctx.stroke();
+	}
+}

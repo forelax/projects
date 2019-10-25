@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>yay</title>
+	<style type="text/css">
+		html,body{
+			border:0px;
+			margin:0px;
+			padding:0px;
+		}
+		canvas{
+			display:block;
+			margin:0px;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<script type="text/javascript">
+		var c = document.getElementById("canvas"),
+		    ctx=c.getContext("2d");
+		c.width=window.innerWidth;
+		c.height=window.innerHeight;
+		var ci=[],
+		    cj=[],
+		    cr=[];
+		for(var i = 1 ; i < 1000000 ; i ++){
+			var x = Math.floor(Math.random()*c.width);
+			var y = Math.floor(Math.random()*c.height);
+			var good = true;
+			var r = Math.floor(Math.random()*c.height/2);
+			for(var j = 0 ; j < ci.length ; j++){
+				var dx=Math.abs(x-cj[j]);
+				var dy=Math.abs(y-ci[j]);
+				var df=Math.sqrt(dx*dx+dy*dy);
+				if(df<cr[j]+r){
+//					if(df>Math.max(cr[j],r)-Math.min(r,cr[j]))
+					{
+					good=false;
+					break;
+					}
+				}
+			}
+			if(good){
+				ci.push(y);
+				cj.push(x);
+				cr.push(r);
+				ctx.beginPath();
+				ctx.arc(x,y,r,0,2*Math.PI);
+				ctx.stroke();
+			}
+		}
+	</script>
+</body>
+</html>

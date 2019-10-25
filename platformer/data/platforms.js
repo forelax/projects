@@ -1,0 +1,20 @@
+function platform(x,y,xdir,ydir,speed){
+	this.x=x;
+	this.y=y;
+	this.vis=false;
+	this.xdir=xdir;
+	this.ydir=ydir;
+	this.speed=speed;
+	this.color;
+	this.display=function(){
+		if(!this.vis)
+			ctx.fillStyle="white";
+		else
+			ctx.fillStyle=this.color;
+		ctx.fillRect(this.x,this.y,200,15);
+	}
+	this.update=function(){
+		this.x+=this.xdir*this.speed;
+		this.y+=this.ydir*this.speed;
+	}
+}

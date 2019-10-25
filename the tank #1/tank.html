@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>tank</title>
+</head>
+<body>
+	<canvas id='c' width=720 height=480 style="border:1px solid black">
+		your browser doesn't support the canvas element 
+	</canvas>
+	<script type="text/javascript">
+		var c=document.getElementById('c'),
+			ctx=c.getContext('2d');
+		var field,width,heidht,scale,vis,bullets;
+		function square(iy,jx){
+			this.x=jx;
+			this.y=iy;
+			this.walls=[1,1,1,1];
+		}
+		function rbool(){
+			return Math.floor(Math.random()*2);
+		}
+		function shuffle(arr){
+			for(var i = 0 ; i < arr.length ; i ++){
+				for(var j = i+1 ; j < arr.length ; j ++){
+					if(rbool()){
+						var temp=arr[i];
+						arr[i]=arr[j];
+						arr[j]=temp;
+					}
+				}
+			}
+		}
+		function spline(x1,y1,x2,y2){
+			ctx.fillStyle='rgb(120,120,120)';
+			ctx.fillRect(x1-scale/20,y1-scale/20,x2-x1+scale/10,y2-y1+scale/10);
+		}
+		function bullet(x,y,a){
+			this.x=x;
+			this.y=y;
+			this.xsp=Math.cos(a)*scale/25;
+			this.ysp=Math.sin(a)*scale/25;
+			this.update=function(){
+				this.x+=this.xsp;
+				this.y+=this.ysp;
+			}
+			this.draw=function(){
+				ctx.beginPath();
+				ctx.arc(this.x,this.y,scale/20,0,2*Math.PI);
+				ctx.fillStyle='black';
+				ctx.fill();
+			}
+		}
+		function draw(){
+			ctx.clearRect(0,0,c.width,c.height);
+			for (var i = bullets.length - 1; i >= 0; i--) {
+				bullets[i].draw();
+			}
+			for(var i = 0 ; i < height ; i ++){
+				for (var j = 0; j < width; j++) {
+					for(var k = 0,x1,x2,y1,y2 ; k < 4 ; k ++){
+						if(field[i][j].walls[k]){
+							x1=1-2*(k!=3);
+							y1=1-2*(k!=2);
+							x2=2*(k!=1)-1;
+							y2=2*(k!=0)-1;
+							x1*=scale/2;
+							y1*=scale/2;
+							x2*=scale/2;
+							y2*=scale/2;
+							x1+=field[i][j].x;
+							x2+=field[i][j].x;
+							y1+=field[i][j].y;
+							y2+=field[i][j].y;
+							spline(x1,y1,x2,y2);
+						}
+					}
+				}
+			}
+		}
+		function dfs(ic,jc){
+			var order=[0,1,2,3];
+			shuffle(order);
+			for (var i = 0,ci,cj; i < order.length; i++) {
+				ci=ic+(order[i]-1)%2;
+				cj=jc+(order[i]-2)%2;
+				if(ci>=0&&ci<height&&cj>=0&&cj<width){
+					if(!vis[ci][cj]){
+						vis[ci][cj]=true;
+						field[ic][jc].walls[order[i]]=false;
+						field[ci][cj].walls[order[i]%2+2*(order[i]<2)]=false;
+						dfs(ci,cj);
+					}
+				}
+			}
+		}
+		function setup(){
+			width=Math.floor(Math.random()*9)+6;
+			height=Math.floor(Math.random()*6)+4;
+			scale=Math.min( Math.floor(c.width/width) , Math.floor(c.height/height) );
+			var xoff=0;
+			var yoff=0;
+			if(width*scale<c.width)
+				xoff=(c.width-width*scale)/2;
+			if(height*scale<c.height)
+				yoff=(c.height-height*scale)/2;
+			field=[];
+			vis=[];
+			bullets=[];
+			for(var i = 0 ; i < 10 ; i ++){
+				bullets.push(
+			new bullet(	Math.floor(Math.random()*width)*scale+scale/2+xoff,
+						Math.floor(Math.random()*height)*scale+scale/2+yoff,
+						Math.random()*2*Math.PI));
+			}
+			for(var i = 0 ; i < height ; i ++){
+				field.push([]);
+				vis.push([]);
+				for(var j = 0 ; j < width ; j ++){
+					field[i].push(new square(i*scale+scale/2+yoff,j*scale+scale/2+xoff));
+					vis[i].push(false);
+				}
+			}
+			var bx=Math.floor(Math.random()*width),by=Math.floor(Math.random()*height);
+			vis[by][bx]=true;
+			dfs(by,bx);
+			for (var i = 0; i < height; i++) {
+				for (var j = 0; j < width; j++) {
+					for(var k = 0,ci,cj ; k < 4 ; k ++){
+						ci=i+(k-1)%2;
+						cj=j+(k-2)%2;
+						if(ci>=0&&ci<height&&cj>=0&&cj<width){
+							if(Math.random()>0.95){
+								field[i][j].walls[k]=false;
+								field[ci][cj].walls[k%2+2*(k<2)]=false;
+							}
+						}
+					}
+				}
+			}
+			p1x=Math.random()*width;
+		}
+		function update(){
+			for (var i = bullets.length - 1; i >= 0; i--) {
+				bullets[i].update();
+			}
+		}
+		setup();
+		function play(){
+			update();
+			draw();
+		}
+		var interval = setInterval(play,1000/60);
+		document.addEventListener('keydown',function(event){
+			
+		});
+
+		function segmentIntersect(p0, p1, p2, p3) {
+			var A1 = p1.y - p0.y,
+				B1 = p0.x - p1.x,
+				C1 = A1 * p0.x + B1 * p0.y,
+				A2 = p3.y - p2.y,
+				B2 = p2.x - p3.x,
+				C2 = A2 * p2.x + B2 * p2.y,
+				denominator = A1 * B2 - A2 * B1;
+
+			if(denominator == 0) {
+				return null;
+			}
+
+			var intersectX = (B2 * C1 - B1 * C2) / denominator,
+				intersectY = (A1 * C2 - A2 * C1) / denominator,
+				rx0 = (intersectX - p0.x) / (p1.x - p0.x),
+				ry0 = (intersectY - p0.y) / (p1.y - p0.y),
+				rx1 = (intersectX - p2.x) / (p3.x - p2.x),
+				ry1 = (intersectY - p2.y) / (p3.y - p2.y);
+
+			if(((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1)) && 
+			   ((rx1 >= 0 && rx1 <= 1) || (ry1 >= 0 && ry1 <= 1))) {
+				return {
+					x: intersectX,
+					y: intersectY
+				};
+			}
+			else {
+				return null;
+			}
+		}
+	</script>
+</body>
+</html>

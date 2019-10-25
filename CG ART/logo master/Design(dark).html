@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <style>
+                body,html{
+					border: 0;
+					margin: 0;
+				}
+                canvas{
+					margin: 0;
+                	display: block;
+					background-color:black;
+				}
+			</style>
+		</head>
+		
+		<body onload="startGame()">
+			<canvas id="canvas"></canvas>
+			<script>
+				
+				
+				var c = document.getElementById("canvas");
+				var mouseRad=150;
+				var ctx,x,y,mp=false,button=false;
+				var lx1,ly1,lx2,ly2,cool=true,rad=6,ofs=2;
+				var distD=8;//(2*rad+ofs);
+				function startGame(){
+					c.width = window.innerWidth;
+					c.height = window.innerHeight;
+					ctx=c.getContext("2d");
+//					document.body.insertBefore (c,document.body.childNodes[0]);
+					var interval = setInterval(play,60);
+				}
+				var object = function(tx,ty){
+					this.c1;
+					this.c2;
+					this.c3;
+					this.speed=10;
+					this.x=tx;
+					this.y=ty;
+					this.c;
+					this.c2;
+					this.hx=tx;
+					this.hy=ty;
+					this.xvel;
+					this.yvel;
+					this.update=function(){
+						this.c=Math.sqrt((this.hx-this.x)*(this.hx-this.x)+(this.hy-this.y)*(this.hy-this.y));
+						this.c2=Math.sqrt((x-this.x)*(x-this.x)+(y-this.y)*(y-this.y));
+						if(this.c!=0){
+							if((this.x+(this.hx-this.x)*(this.speed/this.c)<this.hx&&this.x<this.hx)||(this.x+(this.hx-this.x)*(this.speed/this.c)>this.hx&&this.x>this.hx))
+								this.x+=(this.hx-this.x)*(this.speed/this.c);
+							else
+								this.x=this.hx;
+							if((this.y<this.hy&&this.y+(this.hy-this.y)*(this.speed/this.c)<this.hy)||(this.y>this.hy&&this.y+(this.hy-this.y)*(this.speed/this.c)>this.hy))
+								this.y+=(this.hy-this.y)*(this.speed/this.c);
+							else
+								this.y=this.hy;
+						}
+						if(this.c2!=0&&this.c2<=mouseRad&&!button){
+							this.y-=(y-this.y)*(50/this.c2);
+							this.x-=(x-this.x)*(50/this.c2);
+						}
+					}
+					this.draw=function(){
+						this.c1=Math.floor(Math.random()*255);
+						this.c2=Math.floor(Math.random()*255);
+						this.c3=Math.floor(Math.random()*255);
+						ctx.beginPath();
+						ctx.lineWidth=1;
+						ctx.strokeStyle="black";
+						ctx.arc(this.x,this.y,rad,0,2*Math.PI);
+						ctx.fillStyle="rgb(" +this.c1+ " ," +this.c2+ " ," +this.c3+ " )";
+						ctx.fill();
+						ctx.stroke();
+					}
+				}
+				function cPoints(x1,y1,x2,y2){
+					var ccc=Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+					for(var i = 0 ; i < ccc/distD ; i ++){
+					    objects.push(new object( x1+(x2-x1)*(i/ccc)*distD,y1+(y2-y1)*(i/ccc)*distD));
+					}
+				}
+				var objects=new Array();
+				function play(){
+					ctx.clearRect(0,0,c.width,c.height);
+					if(!cool){
+						ctx.beginPath();
+						ctx.lineWidth=2;
+						ctx.strokeStyle="white";
+						ctx.moveTo(x,y);
+						ctx.lineTo(lx1,ly1);
+						ctx.stroke();
+					}
+					for(var i = 0 ; i < objects.length ; i ++){
+						objects[i].update();
+						objects[i].draw();
+					}
+				}
+				c.addEventListener("mousemove", function(event){
+					x=event.pageX-10;
+					y=event.pageY-10;
+				}, true);
+				c.addEventListener('mousedown', function(event){
+					if(cool){
+						lx1=x;
+						ly1=y;
+						cool=false;
+					}
+					mp=true;
+				}, true);
+				c.addEventListener('mouseup', function(event){
+					mp=false;
+					cool=true;
+					lx2=x;
+					ly2=y;
+					cPoints(lx1,ly1,lx2,ly2);
+				}, true);
+				document.addEventListener('keydown', function(event){
+					button=true;
+					if(event.keyCode===79){
+						for(var i = 0 ; i< objects.length ; i ++){
+							objects[i].x=Math.floor((Math.random()*500))+Math.floor((500+c.width)*Math.floor(Math.random()*2))-500;
+							objects[i].y=Math.floor((Math.random()*500))+Math.floor((500+c.height)*Math.floor(Math.random()*2))-500;
+						}
+					}else if(event.keyCode == 88){
+						objects.push(new object(x,y));
+					}
+				}, true);
+				document.addEventListener('keyup', function(event){
+					button=false;
+				}, true);
+		</script>
+		<br>
+	</body>
+</html>

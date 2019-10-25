@@ -1,0 +1,98 @@
+<!DOCTYPE html5>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>martin</title>
+    <script src="jquery.min.js"></script>
+    <style>
+        #game {
+            width:314px;
+            height:278px;
+            font:40px Ariel;
+            display:block;
+            background:#CCCCCC;
+            border:solid black 2px;
+            padding:1px;
+            margin:1px;
+            float:left;
+            text-align:center;
+        }
+        #games {
+            background:#AAAAAA;
+            border:solid black 2px;
+            width:322;
+            height:286;
+        }
+    </style>
+</head>
+<body id="body">
+    <div id="title" style="text-align:center">
+        <h1 style="font:80px Ariel">SITELESS</h1>
+        <p id="some-info" style="font:50px Ariel;">Welcome, Click On A Game To Play</p>
+        <script>
+            setTimeout(function(){ $("#some-info").remove(); }, 5000);
+        </script>
+    </div>
+    <div id="games">
+        <div id="game">
+            Just Shoot <br>
+            <a href="shoot/index.html">
+                <img src="photos/shootBck.jpg" alt="SHOOTING GAME" style="width:304px;height:228px;"
+                onmouseover="this.src='photos/shootTtrl.jpg';" onmouseout="this.src='photos/shootBck.jpg';">
+            </a>
+        </div>
+        <div id="game">
+            Snake <br>
+            <a href="snake/index.html">
+                <img src="photos/snakeBcg.jpg" alt="SNAKE GAME" style="width:304px;height:228px;"
+                onmouseover="this.src='photos/snakeTtrl.jpg';" onmouseout="this.src='photos/snakeBcg.jpg';">
+            </a>
+        </div>
+        <div id="game">
+            Snake2 <br>
+            <a href="snake2/index.html">
+                <img src="photos/snake2Bck.jpg" alt="NEW SNAKE GAME" style="width:304px;height:228px;"
+                onmouseover="this.style.opacity='0.4';" onmouseout="this.style.opacity='1';">
+            </a>
+        </div>
+        <div id="game">
+            Color 'Em <br>
+            <a href="platformer/index.html">
+                <img src="photos/platformsBcg.jpg" alt="PLATFORMS AND MULTIPLAYER" style="width:304px;height:228px;"
+                onmouseover="this.style.opacity='0.4';" onmouseout="this.style.opacity='1';">
+            </a>
+        </div>
+        <div id="game">
+            Defend The Wall <br>
+            <a href="ball/index.html">
+                <img src="photos/ballBcg.jpg" alt="BALLS AND ARCADE" style="width:304px;height:228px;"
+                onmouseover="this.style.opacity='0.4';" onmouseout="this.style.opacity='1';">
+            </a>
+        </div>
+        <div id="game">
+            Tankly Battles <br>
+            <a href="tanky/index.html">
+                <img src="photos/tanklyBcg.jpg" alt="TANKLY" style="width:304px;height:228px;"
+                onmouseover="this.style.opacity='0.4';" onmouseout="this.style.opacity='1';">
+            </a>
+        </div>
+        <div id="game">
+            Avoid <br>
+            <a href="avoid/index.html">
+                <img src="photos/avoidBcg.jpg" alt="AVOID" style="width:304px;height:228px;"
+                onmouseover="this.src='photos/avoidTtrl.jpg';" onmouseout="this.src='photos/avoidBcg.jpg';">
+            </a>
+        </div>
+    </div>
+    <script>
+    	var nGames=7;
+        function update(){
+            document.getElementById('games').style.width=Math.max(1*322,Math.min(Math.floor(window.innerWidth/322)*322,nGames*322));
+            document.getElementById('title').style.width=Math.max(1*322,Math.min(Math.floor(window.innerWidth/322)*322,nGames*322));
+            document.getElementById('games').style.height=Math.max(1*286,Math.min(nGames*286,Math.ceil(nGames/Math.floor(window.innerWidth/322))*286));
+        }
+        update();
+        window.addEventListener('resize', update);
+    </script>
+</body>
+</html>

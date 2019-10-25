@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>romb</title>
+</head>
+<body onload="start();">
+	<canvas id="canvas" width=720 height=480 style="border:2px solid black"></canvas>
+	<script type="text/javascript">
+		var c=document.getElementById("canvas"),
+			ctx=c.getContext("2d");
+		var scale=30,val1,val2,val3,r1d=1,r2d=1,r3d=1,state=false;
+		function drawHex(cx,cy){
+			val1=document.getElementById("r1").value;
+			val2=document.getElementById("r2").value;
+			val3=document.getElementById("r3").value;
+			ctx.fillStyle="rgb("+val1+","+val1+","+val1+")";
+			ctx.beginPath();
+			ctx.moveTo(cx,cy);
+			ctx.lineTo(cx+scale*Math.pow(3,1/2)/2,cy+scale/2);
+			ctx.lineTo(cx,cy+scale);
+			ctx.lineTo(cx-scale*Math.pow(3,1/2)/2,cy+scale/2);
+			ctx.lineTo(cx,cy);
+			ctx.fill();
+			ctx.fillStyle="rgb("+val2+","+val2+","+val2+")";
+			ctx.beginPath();
+			ctx.moveTo(cx,cy);
+			ctx.lineTo(cx,cy-scale);
+			ctx.lineTo(cx+scale*Math.pow(3,1/2)/2,cy-scale/2);
+			ctx.lineTo(cx+scale*Math.pow(3,1/2)/2,cy+scale/2);
+			ctx.lineTo(cx,cy);
+			ctx.fill();
+			ctx.fillStyle="rgb("+val3+","+val3+","+val3+")";
+			ctx.beginPath();
+			ctx.moveTo(cx,cy);
+			ctx.lineTo(cx,cy-scale);
+			ctx.lineTo(cx-scale*Math.pow(3,1/2)/2,cy-scale/2);
+			ctx.lineTo(cx-scale*Math.pow(3,1/2)/2,cy+scale/2);
+			ctx.lineTo(cx,cy);
+			ctx.fill();
+		}
+		function start(){
+			var interval=setInterval(draw,1000/60);
+		}
+		function draw(){
+			ctx.clearRect(0,0,c.width,c.height);
+			for(var y = -scale*3 ; y <= c.height+scale*3 ; y+= scale*3/2){
+				for(var x = ((y/(scale*3/2))%2)*Math.pow(3,1/2)/2*scale -Math.pow(3,1/2)*scale*2 ; x <= c.width+Math.pow(3,1/2)*scale*2 ; x+= Math.pow(3,1/2)*scale){
+					drawHex(x,y);
+				}
+			}
+			if(document.getElementById("check").checked){
+				if(parseInt(document.getElementById("r1").value)+r1d>255||
+				   parseInt(document.getElementById("r1").value)+r1d<0)
+					r1d*=-1;
+				if(parseInt(document.getElementById("r2").value)+r2d>255||
+				   parseInt(document.getElementById("r2").value)+r2d<0)
+					r2d*=-1;
+				if(parseInt(document.getElementById("r3").value)+r3d>255||
+				   parseInt(document.getElementById("r3").value)+r3d<0)
+					r3d*=-1;
+				document.getElementById("r1").value=parseInt(document.getElementById("r1").value)+r1d;
+				document.getElementById("r2").value=parseInt(document.getElementById("r2").value)+r2d;
+				document.getElementById("r3").value=parseInt(document.getElementById("r3").value)+r3d;
+			}
+		}
+	</script>
+	<br>
+	AUTO<input type="checkbox" id="check">
+	<br>
+	change the colors with these sliders
+	<br>
+	<input type="range" min="0" max="255" value="170" id="r1">
+	<br>
+	<input type="range" min="0" max="255" value="136" id="r2">
+	<br>
+	<input type="range" min="0" max="255" value="221" id="r3">
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>slash</title>
+</head>
+<body onload="start()">
+	<canvas id="canvas" width=720 height=480 style="border: 1px solid black"></canvas>
+	<script type="text/javascript">
+		var c = document.getElementById("canvas"),
+			ctx = c.getContext("2d"),scale=20,x=0,y=0,n=0;
+		ctx.lineWidth=scale/5,num=scale/15;
+		var interval;
+		function start(){
+			interval = setInterval(play,20);
+		}
+		function play(){
+			if(Math.random()<0.5){
+				ctx.beginPath();
+				ctx.moveTo(x-num,y+scale+num);
+				ctx.lineTo(x+scale+num,y-num);
+				ctx.stroke();
+			}else{
+				ctx.beginPath();
+				ctx.moveTo(x-num,y-num);
+				ctx.lineTo(x+scale+num,y+scale+num);
+				ctx.stroke();
+			}
+			x+=scale;
+			if(x>c.width){
+				x=0;
+				y+=scale;
+				if(y>c.height){
+					x=0;y=0;
+					ctx.fillRect(0,0,c.width,c.height);
+					/*clearInterval(interval);*/
+					n=(n+1)%2;
+					if(n%2){
+						ctx.fillStyle="white";
+						ctx.strokeStyle="white";
+					}else{
+						ctx.fillStyle="black";
+						ctx.strokeStyle="black";
+					}
+				}
+			}
+		}
+	</script>
+</body>
+</html>

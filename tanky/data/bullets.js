@@ -1,0 +1,63 @@
+function spawn(n){
+	for (var i = 0; i < n; i++) {
+		bullets.push(new bullet(Math.random()*(c.width-2)+1,Math.random()*(c.height-2)+1,Math.random()*2*Math.PI,3 ));
+	}
+}
+
+function bullet(xpos,ypos,angle,owner){
+	this.x=xpos;
+	this.y=ypos;
+	this.angle=angle;
+	this.speed=5;
+	this.scale=5;
+	this.lifeSpan=750;
+	this.owner=owner;
+	this.display=function(){
+		ctx.fillStyle="black";
+		if(this.owner!=3)
+			ctx.fillStyle="#333333";
+		ctx.globalAlpha=1-(this.lifeSpan<=50)*(1-this.lifeSpan/50);
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.scale,0,2*Math.PI);
+		ctx.fill();
+		ctx.globalAlpha=1;
+	}
+	this.update=function(){
+		if(this.owner!=3)
+			this.lifeSpan--;
+		if(this.lifeSpan>30){
+			if((this.x-tank1.x)*(this.x-tank1.x)+(this.y-tank1.y)*(this.y-tank1.y)<=(this.scale+tank1.scale)*(this.scale+tank1.scale)){
+				tank1.health--;
+				if(tank1.health<0)
+					tank1.health=0;
+			}
+			if((this.x-tank2.x)*(this.x-tank2.x)+(this.y-tank2.y)*(this.y-tank2.y)<=(this.scale+tank2.scale)*(this.scale+tank2.scale)){
+				tank2.health--;
+				if(tank2.health<0)
+					tank2.health=0;
+			}
+		}
+		this.x+=this.speed*Math.cos(this.angle);
+		this.y+=this.speed*Math.sin(this.angle);
+		if(this.x<this.scale){
+			this.x=2*this.scale-this.x;
+			this.angle-=Math.PI/2;
+			this.angle=2*Math.PI-this.angle;
+			this.angle+=Math.PI/2;
+		}
+		if(this.y<this.scale){
+			this.y=2*this.scale-this.y;
+			this.angle=2*Math.PI-this.angle;
+		}
+		if(this.x>c.width-this.scale){
+			this.x=2*(c.width-this.scale)-this.x;
+			this.angle-=Math.PI/2;
+			this.angle=2*Math.PI-this.angle;
+			this.angle+=Math.PI/2;
+		}
+		if(this.y>c.height-this.scale){
+			this.y=2*(c.height-this.scale)-this.y;
+			this.angle=2*Math.PI-this.angle;
+		}
+	}
+}

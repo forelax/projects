@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>justGoRound</title>
+	<style type="text/css">
+		body,html{
+			margin: 0;
+			border: 0;
+		}
+		canvas{
+			display:block;
+		}
+	</style>
+</head>
+<body onload="start()">
+	<canvas id='c'></canvas>
+	<script type="text/javascript">
+		var c,ctx,circles;
+		function circle(x,y,r,color){
+			this.x=x;
+			this.y=y;
+			this.r=r;
+			this.color=color;
+			this.children=[];
+		};
+		function draw(ind){
+			ctx.beginPath();
+			ctx.arc(circles[ind].x,circles[ind].y,circles[ind].r,0,2*Math.PI);
+			ctx.fillStyle=circles[ind].color;
+			ctx.fill();
+			for(var j = 0 ; j < circles[ind].children.length ; j ++){
+				draw(circles[ind].children[j]);
+			}
+		}
+		function start(){
+			c=document.getElementById("c");
+			ctx=c.getContext('2d');
+			var mult=1;
+			c.width=window.innerWidth*mult;
+			c.height=window.innerHeight*mult;
+			var rnda1=Math.random()*256;
+			var rnda2=Math.random()*256;
+			var rnda3=Math.random()*256;
+			var backgroundColor='rgb('+rnda1+','+rnda2+','+rnda3+')';
+			circles=[];
+			circles.push(new circle(c.width/2,c.height/2,c.width/2+c.height/2,backgroundColor));
+			for(var i = 0 ; i < 1000000 ; i ++){
+				var x=Math.random()*c.width;
+				var y=Math.random()*c.height;
+				var r=Math.random()*Math.min(c.width/4,c.height/4);
+				var rnd1=Math.random()*256;
+				var rnd2=Math.random()*256;
+				var rnd3=Math.random()*256;
+				var color='rgb('+rnd1+','+rnd2+','+rnd3+')';
+				var ind=0;
+				var inside=false;
+				for(var j = 0 ; j <= circles[ind].children.length ; j ++){
+					if(j==circles[ind].children.length){
+						if(inside)break;
+						circles[ind].children.push(circles.length);
+						circles.push(new circle(x,y,r,color));
+						break;
+					}
+					var dist = Math.sqrt( Math.pow((x-circles[circles[ind].children[j]].x), 2) + Math.pow((y-circles[circles[ind].children[j]].y), 2) );
+					if(dist>=r+circles[circles[ind].children[j]].r||dist<=Math.abs(r-circles[circles[ind].children[j]].r)){
+						if(dist<=Math.abs(r-circles[circles[ind].children[j]].r)){
+							if(r<=circles[circles[ind].children[j]].r){
+								ind=circles[ind].children[j];
+								j=-1;
+								continue;
+							}else{
+								inside=true;
+							}
+						}
+					}else{
+						inside=false;
+						break;
+					}
+				}
+				if(inside){
+					var t=new circle(x,y,r,color),pos=0;
+					for(var j = 0 ; j<circles[ind].children.length ; j++){
+						var dist = Math.sqrt( Math.pow((x-circles[circles[ind].children[j]].x), 2) + Math.pow((y-circles[circles[ind].children[j]].y), 2) );
+						if(dist<=Math.abs(r-circles[circles[ind].children[j]].r)){
+							t.children.push(circles[ind].children[j]);
+						}else{
+							circles[ind].children[pos]=circles[ind].children[j];
+							pos++;
+						}
+					}
+					circles[ind].children.splice(pos,circles[ind].children.length-pos);
+					circles[ind].children.push(circles.length);
+					circles.push(t);
+				}
+			}
+			draw(0);
+			console.log("done");
+		}
+	</script>
+</body>
+</html>

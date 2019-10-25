@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<style>
+	canvas {
+	    border:9px solid rgb(100,100,100);
+	    background-color: #f1f1f1;
+	}
+	</style>
+	<title>snake2</title>
+</head>
+<body onload="startGame()">
+
+	<script>
+		var mult=1.5;
+		var rx,ry;
+		var prT=0;
+		var gameOver=false;
+		var canvas = document.createElement("canvas");
+		var context;
+		var canChange=true;
+		var psize;
+		var rk=false,lk=false;
+		var interval;
+
+		var tpx=[],tpy=[],tpa=[];
+
+		var snake = {
+			x:0,
+			y:0,
+			tailLen:0,
+			score:0,
+			scale:20,
+			angle:3/2*Math.PI,
+			canChange:true
+		};
+		var fruit = {
+			x:null,
+			y:null
+		};
+
+		function setup(){
+			snake.x=(Math.floor((canvas.width/snake.scale)/2)*snake.scale);
+			snake.y=(Math.floor((canvas.height/snake.scale)/2)*snake.scale);
+			snake.tailLen=0;
+			fruit.x=Math.floor(Math.random()*(canvas.width/snake.scale))*snake.scale;
+			fruit.y=Math.floor(Math.random()*(canvas.height/snake.scale))*snake.scale;
+			psize=Math.round(snake.scale/10);
+			fsize=Math.round(snake.scale/5);
+			snake.score=0;
+			tpx=[];
+			tpy=[];
+		}
+
+
+		function startGame(){
+			canvas.width = (Math.floor(680/snake.scale))*snake.scale;
+			canvas.height = (Math.floor(560/snake.scale))*snake.scale;
+			context=canvas.getContext("2d");
+			document.body.insertBefore (canvas ,document.body.childNodes[0]);
+			setup();
+			interval = setInterval(play,50/mult);
+		}
+
+		function update(){
+
+			if(!gameOver){
+				tpx.splice(0,0,tpx.splice(snake.tailLen-1,1));
+				tpy.splice(0,0,tpy.splice(snake.tailLen-1,1));
+				tpx[0]=snake.x;
+				tpy[0]=snake.y;
+
+				if (rk) {
+					snake.angle+=2*Math.PI/10/2.5/mult;
+				}else if(lk){
+					snake.angle-=2*Math.PI/10/2.5/mult;
+				}
+				
+				var c=10/mult;
+				snake.y+=Math.sin(snake.angle)*c;
+				snake.x+=Math.cos(snake.angle)*c;
+
+				if(snake.x<-snake.scale/2)
+					snake.x+=canvas.width;
+				else if(snake.x>=canvas.width-snake.scale/2)
+					snake.x-=canvas.width;
+
+				if(snake.y<-snake.scale/2)
+					snake.y+=canvas.height;
+				else if(snake.y>=canvas.height-snake.scale/2)
+					snake.y-=canvas.height;
+				
+				
+				for(var i = 15 ; i < snake.tailLen ; i ++){
+					if(Math.sqrt(Math.abs(tpx[i]-snake.x)*Math.abs(tpx[i]-snake.x)+Math.abs(tpy[i]-snake.y)*Math.abs(tpy[i]-snake.y)) < snake.scale/2+(snake.scale-2*psize)/2 ){
+						context.lineWidth= 3;
+						context.strokeStyle="red";
+						context.beginPath();
+						context.moveTo(snake.x,snake.y);
+						context.lineTo(snake.x+snake.scale,snake.y+snake.scale);
+						context.moveTo(snake.x,snake.y+snake.scale);
+						context.lineTo(snake.x+snake.scale,snake.y);
+						context.stroke();
+						setup();
+						gameOver=true;
+						break;
+					}
+				}
+				
+				
+				if(Math.sqrt(Math.abs(snake.x-fruit.x)*Math.abs(snake.x-fruit.x)+Math.abs(snake.y-fruit.y)*Math.abs(snake.y-fruit.y))<snake.scale/2+(snake.scale-fsize)/2 ){
+					snake.tailLen+=Math.floor(5*mult);
+					snake.score+=1;
+					for(var i = 0 ; i < 5*mult ; i ++){
+						tpx.push(tpx[snake.tailLen-1]+(tpx[snake.tailLen-1]-tpx[snake.tailLen-2]));
+						tpy.push(tpy[snake.tailLen-1]+(tpy[snake.tailLen-1]-tpy[snake.tailLen-2]));
+					}
+					fruit.x=Math.floor(Math.random()*(canvas.width/snake.scale))*snake.scale;
+					fruit.y=Math.floor(Math.random()*(canvas.height/snake.scale))*snake.scale;
+					for(var i = 0 ; i < snake.tailLen ; i ++){
+						if(tpx[i]==fruit.x&&tpy[i]==fruit.y){
+							fruit.x=Math.floor(Math.random()*(canvas.width/snake.scale))*snake.scale;
+							fruit.y=Math.floor(Math.random()*(canvas.height/snake.scale))*snake.scale;
+							i=0;
+						}
+					}
+				}
+				
+			}
+		}
+
+		function draw(){
+			if(!gameOver){
+				context.clearRect(0,0,canvas.width,canvas.height);
+				context.fillStyle = "black";
+				context.beginPath();
+				context.arc(snake.x+snake.scale/2,snake.y+snake.scale/2,snake.scale/2,0,2*Math.PI);
+				context.fill();
+				
+				for(var i = 0 ; i < snake.tailLen ; i ++){
+					context.beginPath();
+					context.arc(tpx[i]+psize+(snake.scale-2*psize)/2,tpy[i]+psize+(snake.scale-2*psize)/2,(snake.scale-2*psize)/2,0,2*Math.PI);
+					context.fill();
+				}
+				
+				context.fillStyle = "red";
+				context.beginPath();
+				context.arc(fruit.x+snake.scale/2,fruit.y+snake.scale/2,(snake.scale-fsize)/2,0,2*Math.PI);
+				context.fill();
+
+				context.font = "32px Ariel";
+				context.fillText ("Score: "+snake.score,0 , canvas.height -1);
+
+				context.font = "22px Ariel";
+				context.fillText ("Quality(experimental)   H   M   L  ",150,canvas.height -4);
+				if(mult==1){
+					context.beginPath();
+					context.rect(426,canvas.height-22,22,22);
+					context.strokeStyle="black";
+					context.stroke();
+				}else if(mult==2){
+					context.beginPath();
+					context.rect(360,canvas.height-22,22,22);
+					context.strokeStyle="black";
+					context.stroke();
+				}else{
+					context.beginPath();
+					context.rect(393,canvas.height-22,22,22);
+					context.strokeStyle="black";
+					context.stroke();
+
+				}
+			}
+			else{
+				context.fillStyle= "#A52D13";
+				context.font="32px Ariel";
+				if(prT==0)
+					context.fillText ("Press any button 3 times to replay",canvas.width/4-23,canvas.height/2+40);
+				else if (prT==1)
+					context.fillText ("2",canvas.width/4+190,canvas.height/2+64);
+				else
+					context.fillText ("1",canvas.width/4+190,canvas.height/2+88);
+				context.fillStyle= "red";
+				context.font="64px Ariel";
+				context.fillText ("GAME OVER",canvas.width/4,canvas.height/2);
+			}
+		}
+
+		function play(){
+			update();
+			draw();
+		}
+
+		document.addEventListener('keydown', function(event) {
+			if ((event.keyCode == 39||event.keyCode==68)) {
+				rk=true;
+			}else if((event.keyCode==37||event.keyCode==65)){
+				lk=true;
+			}else if(event.keyCode==76){
+				clearInterval(interval);
+				mult=1;
+				interval = setInterval(play,50/mult);
+			}else if(event.keyCode==77){
+				clearInterval(interval);
+				mult=1.5;
+				interval = setInterval(play,50/mult);
+			}else if(event.keyCode==72){
+				clearInterval(interval);
+				mult=2;
+				interval = setInterval(play,50/mult);
+			}
+			if(gameOver){
+				prT++;
+				if(prT==3){
+					gameOver=false;
+					prT=0;
+				}
+			}
+		}, true);
+
+		document.addEventListener('keyup', function(event) {
+			if ((event.keyCode == 39||event.keyCode==68)) {
+				rk=false;
+			}else if((event.keyCode==37||event.keyCode==65)){
+				lk=false;
+			}
+		}, true);
+
+	</script>
+	<br/>
+	<a href="../index.html"><button type="button">HOME</button></a>
+	    
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>my 3d world</title>
+</head>
+<body>
+<canvas id="canvas" width=640 height=480 style="border:1px solid #000000;">Your browser doesn't support the canvas element</canvas>
+
+<script type="text/javascript">
+	function circle(drctx,x,y,r,col,ol){
+		drctx.beginPath();
+		drctx.arc(x,y,r,0,2*Math.PI); 
+		drctx.fillStyle=col;
+		drctx.fill();
+		if(ol){
+			drctx.strokeStyle='black';
+			drctx.stroke();
+		}
+	}
+	function line(drctx,x1,y1,x2,y2){
+		drctx.beginPath();
+		drctx.moveTo(x1,y1);
+		drctx.lineTo(x2,y2);
+		drctx.lineWidth=2;
+		drctx.stroke();
+	}
+	function triangle(drctx,p1,p2,p3,col,ol){
+		drctx.beginPath();
+		drctx.moveTo(p1.x,p1.y);
+		drctx.lineTo(p2.x,p2.y);
+		drctx.lineTo(p3.x,p3.y);
+		drctx.lineTo(p1.x,p1.y);
+		drctx.fillStyle=col;
+		drctx.fill();
+		if(ol){
+			drctx.strokeStyle='black';
+			drctx.stroke();
+		}
+		console.log(p1,p2,p3);
+	}
+	function map(val,minval,maxval,mapmin,mapmax){
+			return mapmin+((val-minval)/(maxval-minval))*(mapmax-mapmin) ;
+	}
+	function Pixel(x,y){
+		var tpx=x,
+			tpy=y,
+			tpd,
+			tpc;
+	}
+</script>
+
+<script type="text/javascript">
+	var dkey=false,akey=false,skey=false,wkey=false,dakey=false,uakey=false,lakey=false,rakey=false;
+
+	document.addEventListener('keydown',function(event){
+		var key=event.key;
+		if(key=='w'){
+			wkey=true;
+		}else if(key=='s'){
+			skey=true;
+		}else if(key=='a'){
+			akey=true;
+		}else if(key=='d'){
+			dkey=true;
+		}else if(key=='ArrowUp'){
+			uakey=true;
+		}else if(key=='ArrowDown'){
+			dakey=true;
+		}else if(key=='ArrowLeft'){
+			lakey=true;
+		}else if(key=='ArrowRight'){
+			rakey=true;
+		}
+	});
+	document.addEventListener('keyup',function(event){
+		var key=event.key;
+		if(key=='w'){
+			wkey=false;
+		}else if(key=='s'){
+			skey=false;
+		}else if(key=='a'){
+			akey=false;
+		}else if(key=='d'){
+			dkey=false;
+		}else if(key=='ArrowUp'){
+			uakey=false;
+		}else if(key=='ArrowDown'){
+			dakey=false;
+		}else if(key=='ArrowLeft'){
+			lakey=false;
+		}else if(key=='ArrowRight'){
+			rakey=false;
+		}
+	});
+</script>
+
+<script type="text/javascript">
+	var c=document.getElementById("canvas"),
+		ctx=c.getContext("2d");
+	var ctxData=[],mesh=[],px=c.width/2,py=c.height/2,pz=0,speed=5;
+	
+	function setup(){
+		for (var i = 0; i < c.height; i++) {
+			ctxData[i]=[];
+			for (var j = 0; j < c.width; j++) {
+				ctxData[i][j]=new Pixel(i,j);
+			}
+		}
+	}
+	function worldDraw(){
+		ctx.fillStyle='lightblue';
+		ctx.fillRect(0,0,c.width,c.height);
+		/*line(ctx,0,c.height/2,c.width,c.height/2);
+		line(ctx,c.width/2,0,c.width/2,c.height);
+		*//*for (var i = 0; i < ctxData.length; i++) {
+			for (var j = 0; j < ctxData[i].length; j++) {
+				ctxData[i][j].tpd=Infinity;
+				ctxData[i][j].tpc='lightblue';
+			}
+		}*//*
+		for(var i = mesh.length-1 ; i>=0 ; i --){
+
+		}*/
+	}
+	setup();
+	var interval = setInterval(function(){
+		console.log(pz);
+		ctx.clearRect(0,0,c.width,c.height);
+		if(wkey)
+			py-=speed;
+		if(skey)
+			py+=speed;
+		if(akey)
+			px-=speed;
+		if(dkey)
+			px+=speed;
+		if(uakey){
+			uakey=false;
+			pz+=speed;
+		}
+		if(dakey){
+			dakey=false;
+			pz-=speed;
+		}
+		worldDraw();
+/*		ctx.font='40px Ariel';
+		ctx.fillStyle='black';
+		ctx.fillText('depth of',0,40);
+		ctx.fillText('nearest ball :',0,80);
+		ctx.fillText(mesh[0].z1,0,120);
+*/	},1000/30);
+
+
+</script>
+</body>
+</html>

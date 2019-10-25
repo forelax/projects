@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>troll</title>
+	<style type="text/css">
+		canvas {
+			background-color: #f1f1f1;
+			display: block;
+		}
+		html, body {
+			margin: 0px;
+		}
+	</style>
+</head>
+<body onload="load()">
+	<canvas id="trap"></canvas>
+	<script type="text/javascript">
+		var c,ctx,x,y;
+		function load(){
+			c=document.getElementById('trap');
+			ctx=c.getContext('2d');
+			c.width=window.innerWidth;
+			c.height=window.innerHeight;
+			x=0;y=30;
+		}
+		window.addEventListener('keydown',function(event){
+			x+=15;
+			if(x>c.width){
+				x=15;
+				y+=30;
+				if(y>=c.height){
+					y=30;
+					ctx.clearRect(0,0,c.width,c.height);
+				}
+			}
+			ctx.font="30px Calibri";
+			ctx.textAlign="center";
+			ctx.fillStyle="black";
+			ctx.fillText(event.key,x,y);
+		});
+	</script>
+</body>
+</html>

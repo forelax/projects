@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cardioid</title>
+</head>
+<body>
+<canvas id="canvas" width=720 height=480 style="border:1px solid #000000;">Your browser doesn't support the canvas element</canvas>
+<script type="text/javascript">
+	var c=document.getElementById("canvas"),
+		ctx=c.getContext("2d");
+	var scale=1.002;
+	var deg=18/180*Math.PI;
+	ctx.translate(c.width/2,c.height/3);
+	function drawCardioid(x,y,r){
+		for (var i = 0,xc,yc,rc; i < 2*Math.PI; i+=deg) {
+			xc=x+Math.cos(i)*r;
+			yc=y+Math.sin(i)*r;
+			rc=((xc-x)**2+(yc-y+r)**2)**(1/2);
+			ctx.beginPath();
+			ctx.arc(xc,yc,rc,0,2*Math.PI);
+			ctx.stroke();
+		}
+	}
+	var interval = setInterval(function(){
+		ctx.clearRect(-c.width/2,-c.height/2,c.width,c.height);
+		drawCardioid(0,50,50);
+		ctx.scale(scale,scale);
+		ctx.lineWidth/=scale;
+		deg/=scale**(1/2);
+	},1000/30);
+</script>
+</body>
+</html>

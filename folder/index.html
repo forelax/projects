@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<canvas id='c' width=720 height=480></canvas>
+<script type="text/javascript">
+	var c=document.getElementById('c');
+	var ctx=c.getContext('2d');
+	var speed=15;
+	function mirror(x,y){
+		return y+(y-x);
+	}
+	function dist(x,y,a,b){
+		return Math.sqrt((x-a)*(x-a)+(y-b)*(y-b));
+	}
+	function map(n,b,e,mb,me){
+		if(n<=b)return mb;
+		if(n>=e)return me;
+		return mb+((n-b)/(e-b))*(me-mb);
+	}
+	function sign(x){
+		if(x<0)return -1;
+		return 1;
+	}
+	var score=true;
+	function Ball(x,y){
+		this.x=x;
+		this.y=y;
+		this.xSpeed=0;
+		this.ySpeed=0;
+		this.size=10;
+		this.q=[];
+		this.update=function(){
+			if(this.q.length>0){
+				this.xSpeed=0;
+				this.ySpeed=0;
+				for(var i = 0 ; i < this.q.length ; i ++){
+					this.xSpeed+=sign(this.q[i].x)*this.q[i].f*Math.sqrt((Math.pow(this.q[i].x,2)/Math.pow(this.q[i].d,2)));
+					this.ySpeed+=sign(this.q[i].y)*this.q[i].f*Math.sqrt((Math.pow(this.q[i].y,2)/Math.pow(this.q[i].d,2)));
+					console.log(this.q[i]);
+				}
+				this.q=[];
+			}
+			this.x+=this.xSpeed;
+			this.y+=this.ySpeed;
+			this.xSpeed*=0.9;
+			this.ySpeed*=0.9;
+			if(this.x<this.size){
+				if(this.y>=2*c.height/5&&this.y<=3*c.height/5){
+					console.log("B SCORED");
+					score=true;
+					this.x=c.width/2;
+					this.y=c.height/2;
+					return;
+				}
+				this.x=mirror(this.x,this.size);
+				this.xSpeed*=-1;
+			}
+			if(this.y<this.size){
+				this.y=mirror(this.y,this.size);
+				this.ySpeed*=-1;
+			}
+			if(this.x>=c.width-this.size){
+				if(this.y>=2*c.height/5&&this.y<=3*c.height/5){
+					console.log("A SCORED");
+					score=true;
+					this.x=c.width/2;
+					this.y=c.height/2;
+					return;
+				}
+				this.x=mirror(this.x,c.width-this.size);
+				this.xSpeed*=-1;
+			}
+			if(this.y>=c.height-this.size){
+				this.y=mirror(this.y,c.height-this.size);
+				this.ySpeed*=-1;
+			}
+		}
+		this.display=function(){
+			ctx.beginPath();
+			ctx.arc(this.x,this.y,this.size,0,2*Math.PI);
+			ctx.fillStyle="black";
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(this.x,this.y,this.size/2,0,2*Math.PI);
+			ctx.fillStyle="white";
+			ctx.fill();
+		}
+	}
+	var ball=new Ball(c.width/2,c.height/2);
+	function Player(x,y,color){
+		this.x=x;
+		this.y=y;
+		this.cooldown=0;
+		this.color=color;
+		this.size=15;
+		this.force=20;
+		this.radius=150;
+		this.uk=false;
+		this.dk=false;
+		this.lk=false;
+		this.rk=false;
+		this.sk=false;
+		this.update=function(){
+			if(this.uk)this.y-=speed;
+			if(this.dk)this.y+=speed;
+			if(this.lk)this.x-=speed;
+			if(this.rk)this.x+=speed;
+			if(this.x<this.size)this.x=this.size;
+			if(this.y<this.size)this.y=this.size;
+			if(this.x>=c.width-this.size)this.x=c.width-this.size;
+			if(this.y>=c.height-this.size)this.y=c.height-this.size;
+			if(this.sk){
+				var d=dist(this.x,this.y,ball.x,ball.y);
+				if(d<this.radius){
+					ball.q.push({x:ball.x-this.x,y:ball.y-this.y,f:map(d,0,this.radius,this.force,0),d:d});
+				}
+				this.sk=false;
+			}
+		}
+		this.display=function(){
+			ctx.beginPath();
+			ctx.arc(this.x,this.y,this.size,0,2*Math.PI);
+			ctx.fillStyle=this.color;
+			ctx.fill();
+		}
+	}
+	var p1=new Player(c.width/3,c.height/2,"red");
+	var p2=new Player(2*c.width/3,c.height/2,"blue");
+	function play(){
+		ctx.clearRect(0,0,c.width,c.height);
+		p1.update();
+		p2.update();
+		ball.update();
+		p1.display();
+		p2.display();
+		ball.display();
+		{
+			ctx.beginPath();
+			ctx.moveTo(0,c.height/3);
+			ctx.lineTo(0,2*c.height/3);
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.moveTo(c.width,c.height/3);
+			ctx.lineTo(c.width,2*c.height/3);
+			ctx.stroke();
+		}
+		if(score){
+			score=false;
+			p1.x=c.width/3;
+			p1.y=c.height/2;
+			p2.x=2*c.width/3;
+			p2.y=c.height/2;
+			ball.x=c.width/2;
+			ball.y=c.height/2;
+			ball.xSpeed=0;
+			ball.ySpeed=0;
+		}
+	}
+	document.addEventListener('keydown',function(event){
+		var ek=event.key;
+		//console.log(ek);
+		if(ek=="ArrowLeft"){
+			p2.lk=true;
+		}
+		if(ek=="ArrowRight"){
+			p2.rk=true;
+		}
+		if(ek=="ArrowDown"){
+			p2.dk=true;
+		}
+		if(ek=="ArrowUp"){
+			p2.uk=true;
+		}
+		if(ek==8){
+			p2.sk=true;
+		}
+		if(ek=="a"){
+			p1.lk=true;
+		}
+		if(ek=="d"){
+			p1.rk=true;
+		}
+		if(ek=="s"){
+			p1.dk=true;
+		}
+		if(ek=="w"){
+			p1.uk=true;
+		}
+		if(ek=="t"){
+			p1.sk=true;
+		}
+	});
+	document.addEventListener('keyup',function(event){
+		var ek=event.key;
+		if(ek=="ArrowLeft"){
+			p2.lk=false;
+		}
+		if(ek=="ArrowRight"){
+			p2.rk=false;
+		}
+		if(ek=="ArrowDown"){
+			p2.dk=false;
+		}
+		if(ek=="ArrowUp"){
+			p2.uk=false;
+		}
+		if(ek==8){
+			p2.sk=false;
+		}
+		if(ek=="a"){
+			p1.lk=false;
+		}
+		if(ek=="d"){
+			p1.rk=false;
+		}
+		if(ek=="s"){
+			p1.dk=false;
+		}
+		if(ek=="w"){
+			p1.uk=false;
+		}
+		if(ek=="t"){
+			p1.sk=false;
+		}
+	});
+	var interval=setInterval(play,1000/40);
+</script>
+</body>
+</html>
