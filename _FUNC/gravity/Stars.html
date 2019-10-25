@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<style>canvas {background-color: #f1f1f1;display: block;}html, body {margin: 0px;}</style>
+	</head>
+	<body onload="startGame()">
+		<script>
+			var c=document.createElement("canvas"),
+				ctx,
+				x,y,
+				mx,my,
+				xoff,yoff,
+				f=0,cool=0,
+				p={x:0,y:0,xv:0,yv:0,xac:0,yac:0};
+			
+			function setup(){
+				p.x=c.width/2;p.y=c.height/2;
+				ctx.fillStyle= "#A52D13";
+				ctx.font="32px Ariel";
+				ctx.fillText ("click to start",0,25);
+			}
+
+			function startGame(){
+				c.width = window.innerWidth;
+				c.height = window.innerHeight;
+				ctx=c.getContext("2d");
+				document.body.insertBefore (c,document.body.childNodes[0]);
+				setup();
+				var interval = setInterval(update,60);
+			}
+
+			var limit = function(value){
+				if(Math.abs(value)>100)
+					value=(value/Math.abs(value))*100;
+				return value;
+			}
+
+			function update(){
+				if(f){
+					var c=Math.sqrt( (mx-p.x)*(mx-p.x) + (my-p.y)*(my-p.y) );
+					if(c!=0){
+						p.xac=((mx-p.x)/c);
+						p.yac=((my-p.y)/c);
+					}
+					p.xv+=p.xac;
+					p.yv+=p.yac;
+				}
+				ctx.beginPath();
+				ctx.moveTo(Math.round(p.x),Math.round(p.y));
+				//p.xv=limit(p.xv);
+				//p.yv=limit(p.yv);
+				/*if(p.xv>100)
+					p.xv=100;
+				if(p.yv>100)
+					p.yv=100;
+				if(p.xv<-100)
+					p.xv=-100;
+				if(p.yv<-100)
+					p.yv=-100;*/
+				p.x+=p.xv;
+				p.y+=p.yv;
+				ctx.lineTo(Math.round(p.x),Math.round(p.y));
+				/*ctx.arc(p.x,p.y,10,0,2*Math.PI);*/
+				ctx.stroke();
+			}
+			document.addEventListener("mousemove", function(event) {
+				mx=event.pageX;
+				my=event.pageY;
+			}, true);
+			c.addEventListener('mousedown', function(event){
+				mx=event.pageX;
+				my=event.pageY;
+				if(!f){
+					if(!cool){
+						ctx.clearRect(0,0,200,100);
+						cool=true;
+					}
+					
+					p.x=mx;
+					p.y=my;
+					
+				}
+				f=true;
+			}, true);
+			c.addEventListener('mouseup', function(event){
+				f=false;
+			}, true);
+		</script>
+	</body>
+</html>

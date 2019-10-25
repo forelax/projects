@@ -1,0 +1,56 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"/><style>canvas {background-color: #f1f1f1;display: block;}html, body {margin: 0px;}</style></head><body onload="startGame()">
+	
+	<script>
+	var c=document.createElement("canvas"),
+		ctx,
+		x,
+		y,
+		mx,
+		my=-7000,
+		xoff,yoff,
+		f=1,
+		cool=0,
+		p={x:0,y:0,xv:0,yv:0},
+		width,
+		height;
+	function startGame(){
+		c.width = width =  window.innerWidth;
+		c.height = height = window.innerHeight;
+		ctx=c.getContext("2d");
+		p.x=mx=c.width/2;
+		p.y=c.height/2;
+		ctx.fillStyle= "#A52D13";ctx.font="32px Ariel";ctx.fillText ("click to start",0,25);
+		document.body.insertBefore (c,document.body.childNodes[0]);
+		var interval = setInterval(update,60);
+	}
+	function update(){
+		if(f){
+			/*if(!cool){
+				ctx.clearRect(0,0,200,100);
+				cool=true;
+			}*/
+			c.width = width =  window.innerWidth;
+			c.height = height = window.innerHeight;
+			ctx.clearRect(0,0,c.width,c.height);
+			ctx.beginPath();
+			var cc=Math.sqrt( (mx-p.x)*(mx-p.x) + (my-p.y)*(my-p.y) );
+			if(f){
+				p.xv+=(100/(cc*cc))*(mx-p.x);
+				p.yv+=(100/(cc*cc))*(my-p.y);
+			}
+			p.x+=p.xv;
+			p.y+=p.yv;
+			ctx.arc(p.x,p.y,10,0,2*Math.PI);
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.moveTo(Math.round(p.x),Math.round(p.y));
+			ctx.lineTo(Math.round(mx),Math.round(my));
+			ctx.stroke();
+		}
+	}
+	document.addEventListener("mousemove", function(event) {mx=event.pageX;my=event.pageY;}, true);
+	c.addEventListener('mousedown', function(event){if(!f){/*p.x=mx;p.y=my;p.xv=0;p.yv=0;*/f=true;}else f=false;}, true);
+//	c.addEventListener('mouseup', function(event){f=false;}, true);
+</script>
+</body>
+</html>
