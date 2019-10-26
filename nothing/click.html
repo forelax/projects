@@ -110,6 +110,13 @@
 			document.addEventListener("wheel",function (event){
 				r+=-event.deltaY/10;
 				if(r<5)r=5;
+				var x=event.x;
+				var y=event.y;
+				draw(circles[0]);
+				ctx.beginPath();
+				ctx.arc(x,y,r,0,2*Math.PI);
+				ctx.strokeStyle="white";
+				ctx.stroke();
 			});
 		}
 	</script>
