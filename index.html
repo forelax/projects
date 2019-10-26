@@ -33,7 +33,7 @@
             setTimeout(function(){ $("#some-info").remove(); }, 5000);
         </script>
     </div>
-    <div id="games">
+    <div id="games"><!--
         <div id="game">
             Just Shoot <br>
             <a href="shoot/index.html">
@@ -83,9 +83,231 @@
                 onmouseover="this.src='photos/avoidTtrl.jpg';" onmouseout="this.src='photos/avoidBcg.jpg';">
             </a>
         </div>
-    </div>
+ --></div>
     <script>
-    	var nGames=7;
+        var names=[
+            "Just Shoot"
+            ,"Snake"
+            ,"Snake2"
+            ,"Color 'Em"
+            ,"Defend The Wall"
+            ,"Tankly Battles"
+            ,"Avoid"
+            ,"Gravity Example"
+            ,"Stars Orbit"
+            ,"Intersections"
+            ,"Cave Puzzles"
+            ,"Strings CGA"
+            ,"Cardioid CGA"
+            ,"Circles CGA"
+            ,"Laser Sim CGA"
+            ,"Design Dark CGA"
+            ,"Design Light CGA"
+            ,"Romb Mesh CGA"
+            ,"Slashes CGA"
+            ,"Chaos CGA"
+            ,"Chaos CGA"
+            ,"Hilbert Curve"
+            ,"Game Of Life"
+            ,"Mandelbrot Zoom"
+            ,"Draw Cirlces"
+            ,"See Cirlces"
+            ,"Cirlces BW"
+            ,"All Up Puzzle"
+            ,"Primitive 3D"
+            ,"Ray Casting 360"
+            ,"Ray Checkpoints"
+            ,"Marching Ray"
+        ];
+    	var nGames=names.length;
+        var hrefs=[
+            "shoot/index.html"
+            ,"snake/index.html"
+            ,"snake2/index.html"
+            ,"platformer/index.html"
+            ,"ball/index.html"
+            ,"tanky/index.html"
+            ,"avoid/index.html"
+            ,"_FUNC/gravity/Gravityexample.html"
+            ,"_FUNC/gravity/Stars.html"
+            ,"_FUNC/intersection logic/index.html"
+            ,"cave puzzles/index.html"
+            ,"CG ART/coll bacground/old n' dumb/string.html"
+            ,"CG ART/cardioid/index.html"
+            ,"CG ART/circles/index.html"
+            ,"CG ART/laser/laser sim.html"
+            ,"CG ART/logo master/Design(dark).html"
+            ,"CG ART/logo master/Martin.html"
+            ,"CG ART/romb/romb.html"
+            ,"CG ART/slashes/slash.html"
+            ,"chaos game/obsesesesed/index.html"
+            ,"chaos game/sayOk/index.html"
+            ,"hilbert/index.html"
+            ,"LAD/index.html"
+            ,"mandelbrot/index.html"
+            ,"nothing/click.html"
+            ,"nothing/evenBetter.html"
+            ,"nothing/something.html"
+            ,"puzzle/puzzle atempt #1/stuff.html"
+            ,"ray casting projects/projectRAY3dWALLSmap/index.html"
+            ,"ray casting projects/projectRAYcasting360/index.html"
+            ,"ray casting projects/projectRAYcasting360,2/index.html"
+            ,"ray casting projects/projectRAYcastingSINGLE/index.html"
+        ];
+        var imgSrc1=[
+            "photos/shootBck.jpg"
+            ,"photos/snakeBcg.jpg"
+            ,"photos/snake2Bck.jpg"
+            ,"photos/platformsBcg.jpg"
+            ,"photos/ballBcg.jpg"
+            ,"photos/tanklyBcg.jpg"
+            ,"photos/avoidBcg.jpg"
+            ,"photos/gravityBcg.jpg"
+            ,"photos/starsBcg.jpg"
+            ,"photos/intersectionBcg.jpg"
+            ,"photos/caveBcg.jpg"
+            ,"photos/stringCGABcg.jpg"
+            ,"photos/cardioidBcg.jpg"
+            ,"photos/circlesBcg.jpg"
+            ,"photos/laserSimBcg.jpg"
+            ,"photos/darkDesignBcg.jpg"
+            ,"photos/lightDesignBcg.jpg"
+            ,"photos/rombBcg.jpg"
+            ,"photos/slashesBcg.jpg"
+            ,"photos/chaosBcg.jpg"
+            ,"photos/chaos2Bcg.jpg"
+            ,"photos/hilberBcg.jpg"
+            ,"photos/LADBcg.jpg"
+            ,"photos/mandelbrotBcg.jpg"
+            ,"photos/drawCirclesBcg.jpg"
+            ,"photos/circlecBcg.jpg"
+            ,"photos/circlebBcg.jpg"
+            ,"photos/alluppuzzleBcg.jpg"
+            ,"photos/rayRoomBcg.jpg"
+            ,"photos/rayMarchingBcg.jpg"
+            ,"photos/rayPointsBcg.jpg"
+            ,"photos/singleRayBcg.jpg"
+        ];
+        var alts=[
+            "SHOOTING GAME"
+            ,"SNAKE GAME"
+            ,"NEW SNAKE GAME"
+            ,"PLATFORMS AND MULTIPLAYER"
+            ,"BALLS AND ARCADE"
+            ,"TANKLY"
+            ,"AVOID"
+            ,"GRAVITY BALL"
+            ,"STARS"
+            ,"INTERSECTIONS"
+            ,"CAVE PUZZLES"
+            ,"STRINGS CGA"
+            ,"CARDIOID CGA"
+            ,"CIRCLES CGA"
+            ,"LASER CGA"
+            ,"DARK DESIGN CGA"
+            ,"LIGHT DESIGN CGA"
+            ,"ROMB MESH CGA"
+            ,"SLASHES CGA"
+            ,"CHAOS CGA"
+            ,"CHAOS CGA"
+            ,"HILBERT CGA"
+            ,"2P LAD"
+            ,"MANDELBROT"
+            ,"CIRCLES"
+            ,"CIRCLES"
+            ,"CIRCLES"
+            ,"ALL UP PUZZLE"
+            ,"PRIMITIVE 3D"
+            ,"RAY 360"
+            ,"RAY 360"
+            ,"RAY SINGLE"
+        ]
+        var omover=[
+            "this.src='photos/shootTtrl.jpg';"
+            ,"this.src='photos/snakeTtrl.jpg';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.src='photos/avoidTtrl.jpg';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+            ,"this.style.opacity='0.4';"
+        ];
+        var omout=[
+            "this.src='photos/shootBck.jpg';"
+            ,"this.src='photos/snakeBcg.jpg';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.src='photos/avoidBcg.jpg';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+            ,"this.style.opacity='1';"
+        ]
+        for(var i = 0 ; i < nGames ; i ++){
+            var g=document.createElement("div");
+            g.id="game";
+            var tn=document.createTextNode(names[i]);
+            g.appendChild(tn);
+            g.appendChild(document.createElement("br"));
+            var al=document.createElement("a");
+            al.href=hrefs[i];
+            var im=document.createElement("img");
+            im.src=imgSrc1[i];
+            im.alt=alts[i];
+            im.style="width:304px;height:228px;";
+            im.setAttribute("onmouseover",omover[i]);
+            im.setAttribute("onmouseout",omout[i]);
+            al.appendChild(im);
+            g.appendChild(al);
+            document.getElementById("games").appendChild(g);
+        }
         function update(){
             document.getElementById('games').style.width=Math.max(1*322,Math.min(Math.floor(window.innerWidth/322)*322,nGames*322));
             document.getElementById('title').style.width=Math.max(1*322,Math.min(Math.floor(window.innerWidth/322)*322,nGames*322));
